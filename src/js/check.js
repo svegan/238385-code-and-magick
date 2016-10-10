@@ -17,7 +17,7 @@ var getMessage = function(a, b){
     // Оба массивы
     } else if (Array.isArray(a) && Array.isArray(b)){
         var distancePath = a.map(function(elem, index){
-            if (typeof elem !== "number" && typeof b[index] !== "number") {
+            if (typeof elem !== "number" || typeof b[index] !== "number") {
                 throw "Args should be numbers";
             }
             return elem * b[index];
