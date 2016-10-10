@@ -18,7 +18,7 @@ var getMessage = function(a, b){
     } else if (Array.isArray(a) && Array.isArray(b)){
         var distancePath = a.map(function(elem, index){
             if (typeof elem !== "number" && typeof b[index] !== "number") {
-                return "Переданы некорректные данные";
+                throw "Args should be numbers";
             }
             return elem * b[index];
 
@@ -33,7 +33,7 @@ var getMessage = function(a, b){
         var numberOfSteps = a.reduce(function(previousValue, currentValue){
             return previousValue + currentValue;
         });
-        
+
         return "Я прошёл " + numberOfSteps + " шагов";
 
     // Ошибка
