@@ -408,20 +408,52 @@ window.Game = (function() {
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var ctx = this.ctx;
+      var createMessage = function(text) {
+        if (!text) {
+          throw 'Отсутствует сообщение';
+        }
+        ctx.rect(300, 100, 300, 120);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+        ctx.shadowOffsetX = 10;
+        ctx.shadowOffsetY = 10;
+        ctx.fill();
+        ctx.font = '16px PT Mono';
+        ctx.shadowColor = 'transparent';
+        ctx.fillStyle = '#000';
+        ctx.textBaseline = 'hanging';
+        var startHeight = 120;
+        var stepHeight = 20;
+        var nextHeight = 0;
+        for (var i = 0; i < text.length; i++) {
+          nextHeight = startHeight + stepHeight * i;
+          ctx.fillText(text[i], 320, nextHeight);
+        }
+      };
+      var message = [];
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          message.push('Поздравляем!');
+          message.push('Вы победили');
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          message.push('Увы');
+          message.push('Похоже Вас постигла');
+          message.push('неудача');
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          message.push('Игра на паузе!');
+          message.push('Самое время заняться');
+          message.push('чем-нибудь полезным ;)');
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          message.push('Добро пожаловать!');
+          message.push('Нажмите пробел,');
+          message.push('чтобы приступить');
           break;
       }
+      createMessage(message);
     },
 
     /**
