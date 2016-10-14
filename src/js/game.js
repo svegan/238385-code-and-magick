@@ -431,7 +431,7 @@ window.Game = (function() {
         var drawText = function(textToStrings, width) {
           var cWords = textToStrings.split(' ');
           var cString = '';
-          var cMessage = [];
+          var cText = [];
           var RectTextOffsetX = 10;
           var RectTextOffsetY = 20;
           var textOffsetX = rectOffsetX + RectTextOffsetX;
@@ -439,62 +439,41 @@ window.Game = (function() {
           var stringWidth = width - RectTextOffsetX * 2;
           var textStep = 20;
           var i;
-          console.log(cWords);
           // Формирование строк
           for (i = 0; i < cWords.length; i++) {
             // Проверка слова
             if (ctx.measureText(cWords[i]).width > stringWidth) {
               throw 'Слово не помещается в контейнер';
             }
-            if (cString && ctx.measureText(cString + cWords[i]).width > stringWidth) {
-              cMessage.push(cString);
-              cString = cWords[i] + ' ';
-            } else if (cString && ctx.measureText(cString + cWords[i]).width <= stringWidth) {
+            if (cString && ctx.measureText(cString + cWords[i]).width <= stringWidth || !cString) {
               cString += cWords[i] + ' ';
-            } else if (!cString) {
-              cString = cWords[i] + ' ';
+              if (i === cWords.length - 1) {
+                cText.push(cString);
+              }
             } else {
-              console.log('ещё случай');
+              cText.push(cString);
+              cString = cWords[i] + ' ';
             }
           }
-          console.log(cMessage);
-          for (i = 0; i < cMessage.length; i++) {
-            ctx.fillText(cMessage[i], textOffsetX, (textOffsetY + i * textStep));
+          for (i = 0; i < cText.length; i++) {
+            ctx.fillText(cText[i], textOffsetX, (textOffsetY + i * textStep));
           }
         };
         drawText(text, rectWidth);
-        // var startHeight = 120;
-        // var stepHeight = 20;
-        // var nextHeight = 0;
-        // for (var i = 0; i < text.length; i++) {
-        //   nextHeight = startHeight + stepHeight * i;
-        //   ctx.fillText(text[i], 320, nextHeight);
-        // }
       };
       var message = '';
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          message = 'Поздравляем! Вы победили. Приз - банан и выход в следующий тур';
-          // message.push('Поздравляем!');
-          // message.push('Вы победили');
+          message = 'Поздравляем! Вы победили. Приз - банан и выход в следующий тур.';
           break;
         case Verdict.FAIL:
           message = 'Увы, похоже, Вас постигла неудача. В следующий раз должно получиться!';
-          // message.push('Увы');
-          // message.push('Похоже Вас постигла');
-          // message.push('неудача');
           break;
         case Verdict.PAUSE:
-          message = 'Игра на паузе, самое время заняться чем-нибудь полезным';
-          // message.push('Игра на паузе!');
-          // message.push('Самое время заняться');
-          // message.push('чем-нибудь полезным ;)');
+          message = 'Игра на паузе, самое время заняться чем-нибудь полезным.';
           break;
         case Verdict.INTRO:
-          message = 'Добро пожаловать! Жмите пробел, чтобы начать; стрелки, чтобы управлять; и шифт, чтобы стрелять';
-          // message.push('Добро пожаловать!');
-          // message.push('Нажмите пробел,');
-          // message.push('чтобы приступить');
+          message = 'Добро пожаловать! Жмите пробел, чтобы начать; стрелки, чтобы управлять; и шифт, чтобы стрелять.';
           break;
       }
       createMessage(message);
