@@ -432,11 +432,11 @@ window.Game = (function() {
           var cWords = textToStrings.split(' ');
           var cString = '';
           var cText = [];
-          var RectTextOffsetX = 10;
-          var RectTextOffsetY = 20;
-          var textOffsetX = rectOffsetX + RectTextOffsetX;
-          var textOffsetY = rectOffsetY + RectTextOffsetY;
-          var stringWidth = width - RectTextOffsetX * 2;
+          var rectTextOffsetX = 10;
+          var rectTextOffsetY = 20;
+          var textOffsetX = rectOffsetX + rectTextOffsetX;
+          var textOffsetY = rectOffsetY + rectTextOffsetY;
+          var stringWidth = width - rectTextOffsetX * 2;
           var textStep = 20;
           var i;
           // Формирование строк
@@ -445,16 +445,14 @@ window.Game = (function() {
             if (ctx.measureText(cWords[i]).width > stringWidth) {
               throw 'Слово не помещается в контейнер';
             }
-            if (cString && ctx.measureText(cString + cWords[i]).width <= stringWidth || !cString) {
+            if (ctx.measureText(cString + cWords[i]).width <= stringWidth) {
               cString += cWords[i] + ' ';
-              if (i === cWords.length - 1) {
-                cText.push(cString);
-              }
             } else {
               cText.push(cString);
               cString = cWords[i] + ' ';
             }
           }
+          cText.push(cString);
           for (i = 0; i < cText.length; i++) {
             ctx.fillText(cText[i], textOffsetX, (textOffsetY + i * textStep));
           }
