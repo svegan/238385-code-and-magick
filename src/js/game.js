@@ -413,7 +413,11 @@ window.Game = (function() {
         if (!text) {
           throw 'Отсутствует сообщение';
         }
-        ctx.rect(300, 100, 300, 120);
+        var rectOffsetX = 300;
+        var rectOffsetY = 100;
+        var rectWidth = 300;
+        var rectHeight = 120;
+        ctx.rect(rectOffsetX, rectOffsetY, rectWidth, rectHeight);
         ctx.fillStyle = '#FFFFFF';
         ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
         ctx.shadowOffsetX = 10;
@@ -423,34 +427,51 @@ window.Game = (function() {
         ctx.shadowColor = 'transparent';
         ctx.fillStyle = '#000';
         ctx.textBaseline = 'hanging';
-        var startHeight = 120;
-        var stepHeight = 20;
-        var nextHeight = 0;
-        for (var i = 0; i < text.length; i++) {
-          nextHeight = startHeight + stepHeight * i;
-          ctx.fillText(text[i], 320, nextHeight);
-        }
+        // Отрисовка текста
+        var drawText = function(textToStrings, width) {
+          var cWords = textToStrings.split(' ');
+          var cString = '';
+          var cText = [];
+          var rectTextOffsetX = 10;
+          var rectTextOffsetY = 20;
+          var textOffsetX = rectOffsetX + rectTextOffsetX;
+          var textOffsetY = rectOffsetY + rectTextOffsetY;
+          var stringWidth = width - rectTextOffsetX * 2;
+          var textStep = 20;
+          var i;
+          // Формирование строк
+          for (i = 0; i < cWords.length; i++) {
+            // Проверка слова
+            if (ctx.measureText(cWords[i]).width > stringWidth) {
+              throw 'Слово не помещается в контейнер';
+            }
+            if (ctx.measureText(cString + cWords[i]).width <= stringWidth) {
+              cString += cWords[i] + ' ';
+            } else {
+              cText.push(cString);
+              cString = cWords[i] + ' ';
+            }
+          }
+          cText.push(cString);
+          for (i = 0; i < cText.length; i++) {
+            ctx.fillText(cText[i], textOffsetX, (textOffsetY + i * textStep));
+          }
+        };
+        drawText(text, rectWidth);
       };
-      var message = [];
+      var message = '';
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          message.push('Поздравляем!');
-          message.push('Вы победили');
+          message = 'Поздравляем! Вы победили. Приз - банан и выход в следующий тур.';
           break;
         case Verdict.FAIL:
-          message.push('Увы');
-          message.push('Похоже Вас постигла');
-          message.push('неудача');
+          message = 'Увы, похоже, Вас постигла неудача. В следующий раз должно получиться!';
           break;
         case Verdict.PAUSE:
-          message.push('Игра на паузе!');
-          message.push('Самое время заняться');
-          message.push('чем-нибудь полезным ;)');
+          message = 'Игра на паузе, самое время заняться чем-нибудь полезным.';
           break;
         case Verdict.INTRO:
-          message.push('Добро пожаловать!');
-          message.push('Нажмите пробел,');
-          message.push('чтобы приступить');
+          message = 'Добро пожаловать! Жмите пробел, чтобы начать; стрелки, чтобы управлять; и шифт, чтобы стрелять.';
           break;
       }
       createMessage(message);
