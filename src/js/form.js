@@ -46,14 +46,15 @@ window.form = (function() {
   // и запуска вывода информации  о незаполненных полях
   var validateForm = function() {
     var errors = 0;
-    for(i = 0; i < reviewForm.elements.length; i++) {
-      if (reviewForm.elements[i].value === '' && reviewForm.elements[i].hasAttribute('required')) {
+    Array.prototype.forEach.call(reviewForm, function(elem) {
+      var infoElem = elem.id ? infoBlock.querySelector('[for=' + elem.id + ']') : null;
+      if (elem.value === '' && elem.hasAttribute('required')) {
         errors++;
-        changeDisplay(infoBlock.querySelector('[for=' + reviewForm.elements[i].id + ']'), 'inline');
-      } else if (reviewForm.elements[i].id && infoBlock.querySelector('[for=' + reviewForm.elements[i].id + ']')) {
-        changeDisplay(infoBlock.querySelector('[for=' + reviewForm.elements[i].id + ']'), 'none');
+        changeDisplay(infoElem, 'inline');
+      } else if (infoElem) {
+        changeDisplay(infoElem, 'none');
       }
-    }
+    });
     submitButton.disabled = errors ? true : false;
     checkInfo();
   };
@@ -63,13 +64,12 @@ window.form = (function() {
   // Изменение состояния поля "Отзыв"
   var changeTextState = function(active) {
     text.required = active ? true : false;
-    text.disabled = active ? false : true;
   };
   changeTextState(textActive);
 
   // Присваивание обработчиков событий на радиокнопки
-  for (i = 0; i < raitings.length; i++) {
-    raitings[i].onchange = function() {
+  raitings.forEach(function(elem) {
+    elem.onchange = function() {
       if (this.value >= 3) {
         changeTextState(false);
       } else {
@@ -77,17 +77,13 @@ window.form = (function() {
       }
       validateForm();
     };
-  }
+  });
 
   // Присваивание обработчика событий поля "имя"
-  name.oninput = function() {
-    validateForm();
-  };
+  name.oninput = validateForm;
 
   // Присваивание обработчика событий поля "Отзыв"
-  text.oninput = function() {
-    validateForm();
-  };
+  text.oninput = validateForm;
 
   // Изменение видимости информационного блока
   function checkInfo() {
