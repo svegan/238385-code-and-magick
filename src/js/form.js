@@ -47,12 +47,12 @@ window.form = (function() {
   var validateForm = function() {
     var errors = 0;
     Array.prototype.forEach.call(reviewForm, function(elem) {
-      var elemId = elem.id;
+      var infoElem = elem.id ? infoBlock.querySelector('[for=' + elem.id + ']') : null;
       if (elem.value === '' && elem.hasAttribute('required')) {
         errors++;
-        changeDisplay(infoBlock.querySelector('[for=' + elemId + ']'), 'inline');
-      } else if (elemId && infoBlock.querySelector('[for=' + elemId + ']')) {
-        changeDisplay(infoBlock.querySelector('[for=' + elemId + ']'), 'none');
+        changeDisplay(infoElem, 'inline');
+      } else if (infoElem) {
+        changeDisplay(infoElem, 'none');
       }
     });
     submitButton.disabled = errors ? true : false;
