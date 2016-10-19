@@ -39,6 +39,8 @@ window.form = (function() {
   var infoBlock = reviewForm.querySelector('.review-fields');
   var infoLabels = infoBlock.querySelectorAll('label');
   var i;
+  var cookieMark = 'review-mark';
+  var cookieUserName = 'review-name';
 
   name.required = true;
 
@@ -67,6 +69,23 @@ window.form = (function() {
   };
   changeTextState(textActive);
 
+  var getHopperCookie = function() {
+    var userMark = window.Cookies.get(cookieMark);
+    var useName = window.Cookies.get(cookieUserName);
+    if (userMark) {
+      raitings.forEach(function(elem) {
+        if (elem.value === userMark) {
+          elem.checked = true;
+        }
+      });
+    }
+    if (useName) {
+      name.value = useName;
+    }
+  };
+
+  getHopperCookie();
+
   // Присваивание обработчиков событий на радиокнопки
   raitings.forEach(function(elem) {
     elem.onchange = function() {
@@ -75,12 +94,16 @@ window.form = (function() {
       } else {
         changeTextState(true);
       }
+      setHopperCookie(cookieMark, this.value);
       validateForm();
     };
   });
 
   // Присваивание обработчика событий поля "имя"
   name.oninput = validateForm;
+  name.onchange = function() {
+    setHopperCookie(cookieUserName, this.value);
+  };
 
   // Присваивание обработчика событий поля "Отзыв"
   text.oninput = validateForm;
@@ -98,6 +121,15 @@ window.form = (function() {
 
   function changeDisplay(elem, property) {
     elem.style.display = property;
+  }
+
+  function setHopperCookie(cookieName, cookieValue) {
+    var now = new Date();
+    var year = now.getFullYear();
+    var tempDate = new Date(year, 11, 9);
+    var hopperLastBirth = now > tempDate ? tempDate : tempDate.setFullYear(year - 1);
+    var pastDays = Math.floor((now - hopperLastBirth) / (24 * 60 * 60 * 1000));
+    window.Cookies.set(cookieName, cookieValue, { expires: pastDays });
   }
 
   return form;
