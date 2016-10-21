@@ -1,4 +1,5 @@
 'use strict';
+
 /* eslint-disable */
 var reviews = [{
   "author": {
@@ -146,9 +147,9 @@ var IMAGE_LOAD_TIMEOUT = 10000;
 
 var getReviewElem = function(review) {
   var reviewElem = templateContainer.querySelector('.review').cloneNode(true);
-  var author = reviewElem.querySelector('.review-author');
   var profileImage = new Image();
   var profileImageTimeout = null;
+  var author = reviewElem.querySelector('.review-author');
 
   profileImage.onload = function(evt) {
     clearTimeout(profileImageTimeout);
@@ -174,15 +175,11 @@ var getReviewElem = function(review) {
 };
 
 var addReviews = function(reviewsJSON) {
+  container.classList.add('invisible');
   reviewsJSON.forEach(function(review) {
     container.appendChild(getReviewElem(review));
   });
-};
-
-var showReviews = function() {
-  container.classList.add('invisible');
-  addReviews(reviews);
   container.classList.remove('invisible');
 };
 
-showReviews();
+addReviews(reviews);
