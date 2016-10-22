@@ -142,6 +142,7 @@ var reviews = [{
 
 var container = document.querySelector('.reviews-list');
 var template = document.querySelector('template');
+var filters = document.querySelector('.reviews-filter');
 var templateContainer = 'content' in template ? template.content : template;
 var IMAGE_LOAD_TIMEOUT = 10000;
 
@@ -175,11 +176,11 @@ var getReviewElem = function(review) {
 };
 
 var addReviews = function(reviewsJSON) {
-  container.classList.add('invisible');
+  filters.classList.add('invisible');
   reviewsJSON.forEach(function(review) {
     container.appendChild(getReviewElem(review));
   });
-  container.classList.remove('invisible');
+  filters.classList.remove('invisible');
 };
 
 addReviews(reviews);
