@@ -170,7 +170,27 @@ var getReviewElem = function(review) {
     reviewElem.classList.add('review-load-failure');
   }, IMAGE_LOAD_TIMEOUT);
 
-  reviewElem.querySelector('.review-rating').textContent = review.rating;
+  var authorRating = review.rating;
+  var raitingField = reviewElem.querySelector('.review-rating');
+  switch (authorRating) {
+    case 1:
+      raitingField.classList.add('review-rating-one');
+      break;
+    case 2:
+      raitingField.classList.add('review-rating-two');
+      break;
+    case 3:
+      raitingField.classList.add('review-rating-three');
+      break;
+    case 4:
+      raitingField.classList.add('review-rating-four');
+      break;
+    case 5:
+      raitingField.classList.add('review-rating-five');
+      break;
+    default:
+      console.log('No author rating');
+  }
   reviewElem.querySelector('.review-text').textContent = review.description;
   return reviewElem;
 };
