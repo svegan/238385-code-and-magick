@@ -1,23 +1,10 @@
 'use strict';
 
-(function() {
-  var game = new window.Game(document.querySelector('.demo'));
-  game.initializeLevelAndStart();
-  game.setGameStatus(window.Game.Verdict.INTRO);
-
-  var formOpenButton = document.querySelector('.reviews-controls-new');
-
-  /** @param {MouseEvent} evt */
-  formOpenButton.onclick = function(evt) {
-    evt.preventDefault();
-
-    window.form.open(function() {
-      game.setGameStatus(window.Game.Verdict.PAUSE);
-      game.setDeactivated(true);
-    });
-  };
-
-  window.form.onClose = function() {
-    game.setDeactivated(false);
-  };
-})();
+define(['./modules/game', './modules/init', './modules/reviews'], function(initGame, initializePage, printReviews) {
+  // Инициация игры
+  initGame();
+  // Запуск игры и инициация формы
+  initializePage();
+  // Отрисовка отзывов
+  printReviews();
+});
