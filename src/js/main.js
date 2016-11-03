@@ -13,7 +13,7 @@ define(['./modules/game', './modules/init', './modules/reviews', './gallery'], f
     return elem.firstChild.src;
   });
   var gallery = new Gallery(images);
-  galleryImages.forEach(function(elem, index) {
+  Array.prototype.forEach.call(galleryImages, function(elem, index) {
     elem.addEventListener('click', function() {
       gallery.show(index);
     });

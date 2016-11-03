@@ -1,13 +1,17 @@
 'use strict';
 
 define(function() {
-  return function(review) {
+
+  var Review = function(review) {
+    var self = this;
+    this.data = review;
     var template = document.querySelector('template');
     var templateContainer = 'content' in template ? template.content : template;
-    var reviewElem = templateContainer.querySelector('.review').cloneNode(true);
+    this.element = templateContainer.querySelector('.review').cloneNode(true);
     var profileImage = new Image();
     var profileImageTimeout = null;
-    var author = reviewElem.querySelector('.review-author');
+    var author = this.element.querySelector('.review-author');
+    var raitingsDic = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five'};
     var IMAGE_LOAD_TIMEOUT = 10000;
 
     profileImage.onload = function(evt) {
@@ -19,37 +23,37 @@ define(function() {
     };
 
     profileImage.onerror = function() {
-      reviewElem.classList.add('review-load-failure');
+      self.element.classList.add('review-load-failure');
     };
 
     profileImage.src = review.author.picture;
 
     profileImageTimeout = setTimeout(function() {
-      reviewElem.classList.add('review-load-failure');
+      self.element.classList.add('review-load-failure');
+      profileImage.src = '';
     }, IMAGE_LOAD_TIMEOUT);
 
     var authorRating = review.rating;
-    var raitingField = reviewElem.querySelector('.review-rating');
-    switch (authorRating) {
-      case 1:
-        raitingField.classList.add('review-rating-one');
-        break;
-      case 2:
-        raitingField.classList.add('review-rating-two');
-        break;
-      case 3:
-        raitingField.classList.add('review-rating-three');
-        break;
-      case 4:
-        raitingField.classList.add('review-rating-four');
-        break;
-      case 5:
-        raitingField.classList.add('review-rating-five');
-        break;
-      default:
-        console.log('No author rating');
-    }
-    reviewElem.querySelector('.review-text').textContent = review.description;
-    return reviewElem;
+    var raitingField = this.element.querySelector('.review-rating');
+    raitingField.classList.add('review-rating-' + raitingsDic[authorRating]);
+    this.element.querySelector('.review-text').textContent = review.description;
+
+    this.usefulness = this.element.querySelectorAll('.review-quiz-answer');
+    Array.prototype.forEach.call(this.usefulness, function(elem) {
+      elem.onclick = function() {
+        Array.prototype.forEach.call(self.usefulness, function(item) {
+          item.classList.remove('review-quiz-answer-active');
+        });
+        this.classList.add('review-quiz-answer-active');
+      };
+    });
   };
+
+  Review.prototype.remove = function() {
+    Array.prototype.forEach.call(this.usefulness, function(elem) {
+      elem.onclick = null;
+    });
+  };
+
+  return Review;
 });
