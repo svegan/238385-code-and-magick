@@ -75,7 +75,7 @@ define(function() {
         var userMark = window.Cookies.get(cookieMark);
         var useName = window.Cookies.get(cookieUserName);
         if (userMark) {
-          raitings.forEach(function(elem) {
+          Array.prototype.forEach.call(raitings, function(elem) {
             if (elem.value === userMark) {
               elem.checked = true;
             }
@@ -89,7 +89,7 @@ define(function() {
       getHopperCookie();
 
       // Присваивание обработчиков событий на радиокнопки
-      raitings.forEach(function(elem) {
+      Array.prototype.forEach.call(raitings, function(elem) {
         elem.onchange = function() {
           if (this.value >= 3) {
             changeTextState(false);
