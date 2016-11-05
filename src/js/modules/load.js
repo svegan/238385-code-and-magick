@@ -1,12 +1,20 @@
 'use strict';
 
 define(function() {
-  return function(url, callback) {
-    window.JSONPcallback = function(data) {
-      callback(data);
-    };
-    var script = document.createElement('script');
-    script.src = url + '?callback=' + 'JSONPcallback';
-    document.body.appendChild(script);
+  var createParamString = function(params) {
+    return Object.keys(params).map(function(param) {
+      return [param, params[param]].join('=');
+    }).join('&');
+  };
+
+  return function(url, params, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', function(evt) {
+      var loadedData = JSON.parse(evt.target.response);
+      callback(loadedData);
+    });
+    console.log(createParamString(params));
+    xhr.open('GET', url + '?' + createParamString(params));
+    xhr.send();
   };
 });

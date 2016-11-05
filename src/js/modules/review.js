@@ -1,7 +1,6 @@
 'use strict';
 
 define(function() {
-
   var Review = function(review) {
     var self = this;
     this.data = review;
@@ -47,6 +46,17 @@ define(function() {
         this.classList.add('review-quiz-answer-active');
       };
     });
+
+    var debug = false;
+    if (debug) {
+      var timeStampInfo = document.createElement('p');
+      var createdDate = new Date(review.created);
+      timeStampInfo.textContent = 'TimeStamp: ' + createdDate.getDate();
+      this.element.appendChild(timeStampInfo);
+      var popularity = document.createElement('p');
+      popularity.textContent = 'Popularity: ' + review.review_usefulness;
+      this.element.appendChild(popularity);
+    }
   };
 
   Review.prototype.remove = function() {
