@@ -273,6 +273,15 @@ define(function() {
         this._onKeyDown = this._onKeyDown.bind(this);
         this._onKeyUp = this._onKeyUp.bind(this);
         this._pauseListener = this._pauseListener.bind(this);
+        this._onScroll = this._onScroll.bind(this);
+        this._moveClouds = this._moveClouds.bind(this);
+        this.scrollRegarding = {
+          clouds: document.querySelector('.header-clouds'),
+          prevOffset: window.pageYOffset,
+          THROTTLE_DELAY: 100,
+          lastCall: Date.now(),
+          bgDefPos: '50% 0%'
+        };
 
         this.setDeactivated(false);
       };
@@ -745,10 +754,49 @@ define(function() {
           }
         },
 
+        _isElemVisible: function(elem) {
+          var elemPos = elem.getBoundingClientRect();
+          return elemPos.bottom >= 0;
+        },
+
+        _moveClouds: function() {
+          var bgPos = this.scrollRegarding.clouds.style.backgroundPosition || this.scrollRegarding.bgDefPos;
+          var right = window.pageYOffset > this.scrollRegarding.prevOffset ? true : false;
+          bgPos = bgPos.split(' ');
+          bgPos[0] = Number(bgPos[0].split('%')[0]);
+          bgPos[0] = right ? ++bgPos[0] : --bgPos[0];
+          bgPos = bgPos[0] + '%' + ' ' + bgPos[1];
+          this.scrollRegarding.clouds.style.backgroundPosition = bgPos;
+          this.scrollRegarding.prevOffset = window.pageYOffset;
+        },
+
+        _onScroll: function() {
+          // Throttling
+          if ( Date.now() - this.scrollRegarding.lastCall < this.scrollRegarding.THROTTLE_DELAY) {
+            return;
+          }
+          // Проверка видимости облаков, подключение/отключение функции движения
+          if (!this._isElemVisible(this.scrollRegarding.clouds)) {
+            window.removeEventListener('scroll', this._moveClouds);
+            this.scrollRegarding.clouds.style.backgroundPosition = this.scrollRegarding.bgDefPos;
+          } else {
+            window.addEventListener('scroll', this._moveClouds);
+          }
+          // Проверка видимости блока игры: постановку на паузу/продолжение
+          if (!this._isElemVisible(this.container)) {
+            this.setGameStatus(Game.Verdict.PAUSE);
+          } else {
+            this.setGameStatus(Game.Verdict.CONTINUE);
+          }
+
+          this.scrollRegarding.lastCall = Date.now();
+        },
+
         /** @private */
         _initializeGameListeners: function() {
           window.addEventListener('keydown', this._onKeyDown);
           window.addEventListener('keyup', this._onKeyUp);
+          window.addEventListener('scroll', this._onScroll);
         },
 
         /** @private */
