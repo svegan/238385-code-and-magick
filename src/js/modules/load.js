@@ -7,11 +7,13 @@ define(function() {
     }).join('&');
   };
 
-  return function(url, params, callback) {
+  return function(url, params, callback, preStartLoad, afterEndLoad) {
+    preStartLoad();
     var xhr = new XMLHttpRequest();
     xhr.addEventListener('load', function(evt) {
       var loadedData = JSON.parse(evt.target.response);
       callback(loadedData);
+      afterEndLoad();
     });
     xhr.open('GET', url + '?' + createParamString(params));
     xhr.send();

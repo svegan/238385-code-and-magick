@@ -18,20 +18,26 @@ define(['./load', './review'], function(loadData, Review) {
       });
     };
 
+    var preStartLoad = function() {
+      loading = true;
+      filters.classList.add('invisible');
+    };
+
+    var afterEndLoad = function() {
+      filters.classList.remove('invisible');
+      loading = false;
+      page += REVIEWS_STEP;
+    };
+
     var updateReviews = function() {
       if (loading) {
         return;
       }
-      loading = true;
-      filters.classList.add('invisible');
       loadData(REVIEWS_URL, {
         from: page,
         to: page + REVIEWS_STEP,
         filter: currentFilter
-      }, renderReviews);
-      filters.classList.remove('invisible');
-      page += REVIEWS_STEP;
-      loading = false;
+      }, renderReviews, preStartLoad, afterEndLoad);
     };
 
     moreReviewsButton.addEventListener('click', updateReviews);
