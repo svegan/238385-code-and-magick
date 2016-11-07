@@ -1,12 +1,12 @@
 'use strict';
 
-define(['./modules/game', './modules/init', './modules/reviews', './gallery'], function(initGame, initializePage, printReviews, Gallery) {
+define(['./modules/game', './modules/init', './modules/reviews', './gallery'], function(initGame, initializePage, reviewsInit, Gallery) {
   // Инициация игры
   initGame();
   // Запуск игры и инициация формы
   initializePage();
-  // Отрисовка отзывов
-  printReviews();
+  // Инициация отзывов
+  reviewsInit();
 
   var galleryImages = document.querySelectorAll('.photogallery-image');
   var images = Array.prototype.map.call(galleryImages, function(elem) {

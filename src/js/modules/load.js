@@ -1,12 +1,21 @@
 'use strict';
 
 define(function() {
-  return function(url, callback) {
-    window.JSONPcallback = function(data) {
-      callback(data);
-    };
-    var script = document.createElement('script');
-    script.src = url + '?callback=' + 'JSONPcallback';
-    document.body.appendChild(script);
+  var createParamString = function(params) {
+    return Object.keys(params).map(function(param) {
+      return [encodeURIComponent(param), encodeURIComponent(params[param])].join('=');
+    }).join('&');
+  };
+
+  return function(url, params, callback, preStartLoad, afterEndLoad) {
+    preStartLoad();
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener('load', function(evt) {
+      var loadedData = JSON.parse(evt.target.response);
+      callback(loadedData);
+      afterEndLoad();
+    });
+    xhr.open('GET', url + '?' + createParamString(params));
+    xhr.send();
   };
 });
