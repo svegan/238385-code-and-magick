@@ -9,23 +9,29 @@ define(['./load', './review'], function(loadData, Review) {
     var REVIEWS_STEP = 3;
     var page = 0;
     var currentFilter = 'reviews-all';
+    var loading = false;
 
     var renderReviews = function(reviews) {
-      filters.classList.add('invisible');
       Array.prototype.forEach.call(reviews, function(review) {
         var reviewObj = new Review(review);
         container.appendChild(reviewObj.element);
       });
-      filters.classList.remove('invisible');
     };
 
     var updateReviews = function() {
+      if (loading) {
+        return;
+      }
+      loading = true;
+      filters.classList.add('invisible');
       loadData(REVIEWS_URL, {
         from: page,
         to: page + REVIEWS_STEP,
         filter: currentFilter
       }, renderReviews);
+      filters.classList.remove('invisible');
       page += REVIEWS_STEP;
+      loading = false;
     };
 
     moreReviewsButton.addEventListener('click', updateReviews);

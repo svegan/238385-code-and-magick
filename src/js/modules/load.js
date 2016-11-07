@@ -3,7 +3,7 @@
 define(function() {
   var createParamString = function(params) {
     return Object.keys(params).map(function(param) {
-      return [param, params[param]].join('=');
+      return [encodeURIComponent(param), encodeURIComponent(params[param])].join('=');
     }).join('&');
   };
 
@@ -13,7 +13,6 @@ define(function() {
       var loadedData = JSON.parse(evt.target.response);
       callback(loadedData);
     });
-    console.log(createParamString(params));
     xhr.open('GET', url + '?' + createParamString(params));
     xhr.send();
   };
