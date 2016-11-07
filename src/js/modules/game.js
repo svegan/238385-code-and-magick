@@ -761,7 +761,7 @@ define(function() {
 
         _moveClouds: function() {
           var bgPos = this.scrollRegarding.clouds.style.backgroundPosition || this.scrollRegarding.bgDefPos;
-          var right = window.pageYOffset > this.scrollRegarding.prevOffset ? true : false;
+          var right = window.pageYOffset > this.scrollRegarding.prevOffset;
           bgPos = bgPos.split(' ');
           bgPos[0] = Number(bgPos[0].split('%')[0]);
           bgPos[0] = right ? ++bgPos[0] : --bgPos[0];
@@ -785,8 +785,6 @@ define(function() {
           // Проверка видимости блока игры: постановку на паузу/продолжение
           if (!this._isElemVisible(this.container)) {
             this.setGameStatus(Game.Verdict.PAUSE);
-          } else {
-            this.setGameStatus(Game.Verdict.CONTINUE);
           }
 
           this.scrollRegarding.lastCall = Date.now();
