@@ -1,6 +1,6 @@
 'use strict';
 
-define(function() {
+define(['./throttle'], function(throttle) {
   return function() {
     window.Game = (function() {
       /**
@@ -278,8 +278,6 @@ define(function() {
         this.scrollRegarding = {
           clouds: document.querySelector('.header-clouds'),
           prevOffset: window.pageYOffset,
-          THROTTLE_DELAY: 100,
-          lastCall: Date.now(),
           bgDefPos: '50% 0%'
         };
 
@@ -771,10 +769,6 @@ define(function() {
         },
 
         _onScroll: function() {
-          // Throttling
-          if ( Date.now() - this.scrollRegarding.lastCall < this.scrollRegarding.THROTTLE_DELAY) {
-            return;
-          }
           // Проверка видимости облаков, подключение/отключение функции движения
           if (!this._isElemVisible(this.scrollRegarding.clouds)) {
             window.removeEventListener('scroll', this._moveClouds);
@@ -786,15 +780,13 @@ define(function() {
           if (!this._isElemVisible(this.container)) {
             this.setGameStatus(Game.Verdict.PAUSE);
           }
-
-          this.scrollRegarding.lastCall = Date.now();
         },
 
         /** @private */
         _initializeGameListeners: function() {
           window.addEventListener('keydown', this._onKeyDown);
           window.addEventListener('keyup', this._onKeyUp);
-          window.addEventListener('scroll', this._onScroll);
+          window.addEventListener('scroll', throttle(this._onScroll, 100));
         },
 
         /** @private */
