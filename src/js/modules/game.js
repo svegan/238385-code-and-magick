@@ -418,57 +418,8 @@ define(['./throttle'], function(throttle) {
          */
         _drawPauseScreen: function() {
           var ctx = this.ctx;
-          var createMessage = function(text) {
-            if (!text) {
-              throw 'Отсутствует сообщение';
-            }
-            var rectOffsetX = 300;
-            var rectOffsetY = 100;
-            var rectWidth = 300;
-            var rectHeight = 120;
-            ctx.rect(rectOffsetX, rectOffsetY, rectWidth, rectHeight);
-            ctx.fillStyle = '#FFFFFF';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-            ctx.shadowOffsetX = 10;
-            ctx.shadowOffsetY = 10;
-            ctx.fill();
-            ctx.font = '16px PT Mono';
-            ctx.shadowColor = 'transparent';
-            ctx.fillStyle = '#000';
-            ctx.textBaseline = 'hanging';
-            // Отрисовка текста
-            var drawText = function(textToStrings, width) {
-              var cWords = textToStrings.split(' ');
-              var cString = '';
-              var cText = [];
-              var rectTextOffsetX = 10;
-              var rectTextOffsetY = 20;
-              var textOffsetX = rectOffsetX + rectTextOffsetX;
-              var textOffsetY = rectOffsetY + rectTextOffsetY;
-              var stringWidth = width - rectTextOffsetX * 2;
-              var textStep = 20;
-              var i;
-              // Формирование строк
-              for (i = 0; i < cWords.length; i++) {
-                // Проверка слова
-                if (ctx.measureText(cWords[i]).width > stringWidth) {
-                  throw 'Слово не помещается в контейнер';
-                }
-                if (ctx.measureText(cString + cWords[i]).width <= stringWidth) {
-                  cString += cWords[i] + ' ';
-                } else {
-                  cText.push(cString);
-                  cString = cWords[i] + ' ';
-                }
-              }
-              cText.push(cString);
-              for (i = 0; i < cText.length; i++) {
-                ctx.fillText(cText[i], textOffsetX, (textOffsetY + i * textStep));
-              }
-            };
-            drawText(text, rectWidth);
-          };
           var message = '';
+          var messageWidth = 280;
           switch (this.state.currentStatus) {
             case Verdict.WIN:
               message = 'Поздравляем! Вы победили. Приз - банан и выход в следующий тур.';
@@ -483,7 +434,86 @@ define(['./throttle'], function(throttle) {
               message = 'Добро пожаловать! Жмите пробел, чтобы начать; стрелки, чтобы управлять; и шифт, чтобы стрелять.';
               break;
           }
-          createMessage(message);
+
+          var textParams = {
+            ctx: {
+              font: '16px PT Mono',
+              shadowColor: 'transparent',
+              fillStyle: '#000',
+              textBaseline: 'hanging'
+            },
+            extra: {
+              textOffsetX: 310,
+              textOffsetY: 160,
+              spaceBetweenStrings: 6
+            }
+          };
+
+          var getFontSize = function(font) {
+            return parseInt(font.split(' ')[0], 10);
+          };
+
+          var getStringedMessage = function(text, width, font) {
+            var mesureCtx = document.createElement('canvas').getContext('2d');
+            var words = text.split(' ');
+            var newString = '';
+            var stringedMessage = [];
+            mesureCtx.font = font;
+            words.forEach(function(word) {
+              // Проверка слова
+              if (mesureCtx.measureText(word).width > width) {
+                throw 'Слово не помещается в контейнер';
+              }
+              if (mesureCtx.measureText(newString + word).width <= width) {
+                newString += word + ' ';
+              } else {
+                stringedMessage.push(newString);
+                newString = word + ' ';
+              }
+            });
+            stringedMessage.push(newString);
+            return stringedMessage;
+          };
+
+          message = getStringedMessage(message, messageWidth, textParams.ctx.font);
+
+          var getRectHeight = function(stringedMessage, params) {
+            return stringedMessage.length * (getFontSize(params.ctx.font) + params.extra.spaceBetweenStrings) + 30;
+          };
+
+          var rectParams = {
+            size: {
+              offsetX: textParams.extra.textOffsetX - 10,
+              offsetY: textParams.extra.textOffsetY - 20,
+              width: messageWidth + 20,
+              height: getRectHeight(message, textParams)
+            },
+            styles: {
+              fillStyle: '#FFFFFF',
+              shadowColor: 'rgba(0, 0, 0, 0.7)',
+              shadowOffsetX: 10,
+              shadowOffsetY: 10
+            }
+          };
+          var printRectangle = function(context, params) {
+            Object.keys(params.styles).forEach(function(param) {
+              context[param] = params.styles[param];
+            });
+            context.fillRect(params.size.offsetX, params.size.offsetY, params.size.width, params.size.height);
+          };
+
+          var printText = function(context, params) {
+            Object.keys(params.ctx).forEach(function(param) {
+              context[param] = params.ctx[param];
+            });
+            message.forEach(function(messageString, index) {
+              var yCoord = params.extra.textOffsetY + index * (getFontSize(params.ctx.font) + params.extra.spaceBetweenStrings);
+              context.fillText(messageString, params.extra.textOffsetX, yCoord);
+            });
+          };
+          ctx.clearRect(rectParams.size.offsetX, rectParams.size.offsetY, rectParams.size.width, rectParams.size.height);
+          printRectangle(ctx, rectParams);
+          printText(ctx, textParams);
         },
 
         /**
