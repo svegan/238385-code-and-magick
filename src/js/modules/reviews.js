@@ -40,16 +40,22 @@ define(['./load', './review'], function(loadData, Review) {
       }, renderReviews, preStartLoad, afterEndLoad);
     };
 
-    moreReviewsButton.addEventListener('click', updateReviews);
-
     var applyFilter = function(e) {
       container.innerHTML = '';
       page = 0;
       currentFilter = e.target.id;
+      localStorage.setItem('filter', currentFilter);
       updateReviews();
     };
-    filters.addEventListener('change', applyFilter, true);
 
-    updateReviews();
+    moreReviewsButton.addEventListener('click', updateReviews);
+    filters.addEventListener('change', applyFilter, true);
+    window.addEventListener('load', function() {
+      if (localStorage.getItem('filter')) {
+        document.getElementById(localStorage.getItem('filter')).click();
+      } else {
+        updateReviews();
+      }
+    });
   };
 });
