@@ -10,33 +10,25 @@ define(function() {
     this.currentPicture = this.elem.querySelector('.preview-number-current');
     this.total = this.elem.querySelector('.preview-number-total');
     this.close = this.elem.querySelector('.overlay-gallery-close');
+    this._onCloseClick = this._onCloseClick.bind(this);
+    this._onBackwardClick = this._onBackwardClick.bind(this);
+    this._onForwardClick = this._onForwardClick.bind(this);
   };
 
   Gallery.prototype = {
     show: function(number) {
-      var self = this;
-      this.close.onclick = function() {
-        self.hide();
-      };
-      this.backward.onclick = function() {
-        if (self.activePicture >= 1) {
-          self.setActivePicture(self.activePicture - 1);
-        }
-      };
-      this.forward.onclick = function() {
-        if (self.activePicture < self.pictures.length - 1) {
-          self.setActivePicture(self.activePicture + 1);
-        }
-      };
+      this.close.addEventListener('click', this._onCloseClick);
+      this.backward.addEventListener('click', this._onBackwardClick);
+      this.forward.addEventListener('click', this._onForwardClick);
       this.elem.classList.remove('invisible');
       this.total.textContent = this.pictures.length;
       this.setActivePicture(number);
     },
     hide: function() {
       this.elem.classList.add('invisible');
-      this.close.onclick = null;
-      this.backward.onclick = null;
-      this.forward.onclick = null;
+      this.close.removeEventListener('click', this._onCloseClick);
+      this.backward.removeEventListener('click', this._onBackwardClick);
+      this.forward.removeEventListener('click', this._onForwardClick);
     },
     setActivePicture: function(number) {
       this.activePicture = number;
@@ -50,6 +42,19 @@ define(function() {
         preview.appendChild(picture);
       }
       this.currentPicture.textContent = number + 1;
+    },
+    _onCloseClick: function() {
+      this.hide();
+    },
+    _onBackwardClick: function() {
+      if (this.activePicture >= 1) {
+        this.setActivePicture(this.activePicture - 1);
+      }
+    },
+    _onForwardClick: function() {
+      if (this.activePicture < this.pictures.length - 1) {
+        this.setActivePicture(this.activePicture + 1);
+      }
     }
   };
   return Gallery;
