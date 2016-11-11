@@ -420,6 +420,7 @@ define(['./throttle'], function(throttle) {
           var ctx = this.ctx;
           var message = '';
           var messageWidth = 280;
+          var startYcoord = 280;
           switch (this.state.currentStatus) {
             case Verdict.WIN:
               message = 'Поздравляем! Вы победили. Приз - банан и выход в следующий тур.';
@@ -444,7 +445,7 @@ define(['./throttle'], function(throttle) {
             },
             extra: {
               textOffsetX: 310,
-              textOffsetY: 160,
+              textOffsetY: null,
               spaceBetweenStrings: 6
             }
           };
@@ -459,12 +460,13 @@ define(['./throttle'], function(throttle) {
             var newString = '';
             var stringedMessage = [];
             mesureCtx.font = font;
+            var letterWidth = mesureCtx.measureText(words[0][2]).width;
             words.forEach(function(word) {
               // Проверка слова
-              if (mesureCtx.measureText(word).width > width) {
+              if (letterWidth * word.length > width) {
                 throw 'Слово не помещается в контейнер';
               }
-              if (mesureCtx.measureText(newString + word).width <= width) {
+              if ((newString.length + word.length) * letterWidth <= width) {
                 newString += word + ' ';
               } else {
                 stringedMessage.push(newString);
@@ -475,18 +477,20 @@ define(['./throttle'], function(throttle) {
             return stringedMessage;
           };
 
-          message = getStringedMessage(message, messageWidth, textParams.ctx.font);
-
-          var getRectHeight = function(stringedMessage, params) {
-            return stringedMessage.length * (getFontSize(params.ctx.font) + params.extra.spaceBetweenStrings) + 30;
+          var setRectHeight = function(stringedMessage, paramsText, paramsRect, startVertCoord) {
+            var height = stringedMessage.length * (getFontSize(paramsText.ctx.font) + paramsText.extra.spaceBetweenStrings) + 30;
+            paramsText.extra.textOffsetY = startVertCoord - height;
+            paramsRect.size.height = height;
+            paramsRect.size.offsetY = paramsText.extra.textOffsetY - 20;
           };
+
 
           var rectParams = {
             size: {
               offsetX: textParams.extra.textOffsetX - 10,
-              offsetY: textParams.extra.textOffsetY - 20,
+              offsetY: null,
               width: messageWidth + 20,
-              height: getRectHeight(message, textParams)
+              height: null
             },
             styles: {
               fillStyle: '#FFFFFF',
@@ -511,6 +515,8 @@ define(['./throttle'], function(throttle) {
               context.fillText(messageString, params.extra.textOffsetX, yCoord);
             });
           };
+          message = getStringedMessage(message, messageWidth, textParams.ctx.font);
+          setRectHeight(message, textParams, rectParams, startYcoord);
           printRectangle(ctx, rectParams);
           printText(ctx, textParams);
         },
