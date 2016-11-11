@@ -1,11 +1,9 @@
 'use strict';
 
-define(function() {
-  var Review = function(review) {
+define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
+  var Review = function(el, review) {
+    baseDOM.call(this, el);
     this.data = review;
-    var template = document.querySelector('template');
-    var templateContainer = 'content' in template ? template.content : template;
-    this.element = templateContainer.querySelector('.review').cloneNode(true);
     this.profileImage = new Image();
     this.profileImageTimeout = null;
     this.author = this.element.querySelector('.review-author');
@@ -45,30 +43,33 @@ define(function() {
     }
   };
 
-  Review.prototype = {
-    remove: function() {
-      this.usefulness.removeEventListener('click', this._onUsefulnessClick);
-    },
-    _onImageLoad: function(evt) {
-      clearTimeout(this.profileImageTimeout);
-      this.author.src = evt.target.src;
-      this.author.width = 124;
-      this.author.height = 124;
-      this.author.alt = this.data.author.name;
-    },
-    _onImageError: function() {
-      this.element.classList.add('review-load-failure');
-    },
-    _onUsefulnessClick: function(evt) {
-      if (!evt.target.classList.contains('review-quiz-answer')) {
-        return;
-      }
-      Array.prototype.forEach.call(this.usefulnessSpans, function(item) {
-        item.classList.remove('review-quiz-answer-active');
-      });
-      evt.target.classList.add('review-quiz-answer-active');
-    }
+  inherit(Review, baseDOM);
+
+  Review.prototype._onImageLoad = function(evt) {
+    clearTimeout(this.profileImageTimeout);
+    this.author.src = evt.target.src;
+    this.author.width = 124;
+    this.author.height = 124;
+    this.author.alt = this.data.author.name;
   };
 
+  Review.prototype._onImageError = function() {
+    this.element.classList.add('review-load-failure');
+  };
+
+  Review.prototype._onUsefulnessClick = function(evt) {
+    if (!evt.target.classList.contains('review-quiz-answer')) {
+      return;
+    }
+    Array.prototype.forEach.call(this.usefulnessSpans, function(item) {
+      item.classList.remove('review-quiz-answer-active');
+    });
+    evt.target.classList.add('review-quiz-answer-active');
+  };
+
+  Review.prototype.remove = function() {
+    this.usefulness.removeEventListener('click', this._onUsefulnessClick);
+    baseDOM.prototype.remove.call(this);
+  };
   return Review;
 });
