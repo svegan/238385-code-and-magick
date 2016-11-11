@@ -18,7 +18,6 @@ define(['./load', './review'], function(loadData, Review) {
       Array.prototype.forEach.call(reviews, function(review) {
         var reviewObj = new Review(cloneElem.cloneNode(true), review);
         reviewObj.addTo(container);
-        debugger;
       });
     };
 
