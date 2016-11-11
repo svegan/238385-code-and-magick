@@ -460,7 +460,7 @@ define(['./throttle'], function(throttle) {
             var newString = '';
             var stringedMessage = [];
             mesureCtx.font = font;
-            var letterWidth = mesureCtx.measureText(words[0][2]).width;
+            var letterWidth = mesureCtx.measureText(words[0][0]).width;
             words.forEach(function(word) {
               // Проверка слова
               if (letterWidth * word.length > width) {
