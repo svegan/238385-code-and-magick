@@ -511,7 +511,6 @@ define(['./throttle'], function(throttle) {
               context.fillText(messageString, params.extra.textOffsetX, yCoord);
             });
           };
-          ctx.clearRect(rectParams.size.offsetX, rectParams.size.offsetY, rectParams.size.width, rectParams.size.height);
           printRectangle(ctx, rectParams);
           printText(ctx, textParams);
         },
