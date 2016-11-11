@@ -1,6 +1,6 @@
 'use strict';
 
-define(['./load', './review'], function(loadData, Review) {
+define(['./load', './review', './review-data-obj'], function(loadData, Review, ReviewDataObj) {
   return function() {
     var template = document.querySelector('template');
     var templateContainer = 'content' in template ? template.content : template;
@@ -16,7 +16,7 @@ define(['./load', './review'], function(loadData, Review) {
 
     var renderReviews = function(reviews) {
       Array.prototype.forEach.call(reviews, function(review) {
-        var reviewObj = new Review(cloneElem.cloneNode(true), review);
+        var reviewObj = new Review(cloneElem.cloneNode(true), new ReviewDataObj(review));
         reviewObj.addTo(container);
       });
     };
