@@ -4,6 +4,7 @@ define(['./load', './review'], function(loadData, Review) {
   return function() {
     var template = document.querySelector('template');
     var templateContainer = 'content' in template ? template.content : template;
+    var cloneElem = templateContainer.querySelector('.review');
     var container = document.querySelector('.reviews-list');
     var filters = document.querySelector('.reviews-filter');
     var moreReviewsButton = document.querySelector('.reviews-controls-more');
@@ -15,9 +16,9 @@ define(['./load', './review'], function(loadData, Review) {
 
     var renderReviews = function(reviews) {
       Array.prototype.forEach.call(reviews, function(review) {
-        var element = templateContainer.querySelector('.review').cloneNode(true);
-        var reviewObj = new Review(element, review);
+        var reviewObj = new Review(cloneElem.cloneNode(true), review);
         reviewObj.addTo(container);
+        debugger;
       });
     };
 
