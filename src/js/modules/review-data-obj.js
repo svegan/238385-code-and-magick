@@ -32,8 +32,11 @@ define(function() {
     setMessage: function(message) {
       this.data.description = message;
     },
-    setUsefulness: function(usefulness) {
+    setUsefulness: function(usefulness, callback) {
       this.data.review_usefulness = usefulness;
+      if (typeof callback === 'function') {
+        callback();
+      }
     },
     setPicture: function(picture) {
       this.data.author.picture = picture;

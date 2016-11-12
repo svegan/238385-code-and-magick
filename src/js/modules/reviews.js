@@ -57,7 +57,7 @@ define(['./load', './review', './review-data-obj'], function(loadData, Review, R
       if (localStorage.getItem('filter')) {
         document.getElementById(localStorage.getItem('filter')).click();
       } else {
-        updateReviews();
+        document.getElementById(currentFilter).click();
       }
     });
   };
