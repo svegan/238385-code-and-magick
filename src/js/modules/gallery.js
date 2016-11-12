@@ -20,12 +20,16 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
   inherit(Gallery, baseDOM);
 
   Gallery.prototype.show = function(param) {
+    var number = typeof param === 'string' ? this.pictures.indexOf(param) : param;
+    if (number === -1) {
+      return;
+    }
     this.close.addEventListener('click', this._onCloseClick);
     this.backward.addEventListener('click', this._onBackwardClick);
     this.forward.addEventListener('click', this._onForwardClick);
     this.element.classList.remove('invisible');
     this.total.textContent = this.pictures.length;
-    this.setActivePicture(param);
+    this.setActivePicture(number);
   };
   Gallery.prototype.hide = function() {
     this.element.classList.add('invisible');
@@ -34,8 +38,7 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this.forward.removeEventListener('click', this._onForwardClick);
     location.hash = '';
   };
-  Gallery.prototype.setActivePicture = function(param) {
-    var number = typeof param === 'string' ? this.pictures.indexOf(param) : param;
+  Gallery.prototype.setActivePicture = function(number) {
     this.activePicture = number;
     var preview = document.querySelector('.overlay-gallery-preview');
     var existImage = preview.querySelector('img');
