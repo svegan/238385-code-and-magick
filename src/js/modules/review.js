@@ -61,6 +61,13 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     if (!evt.target.classList.contains('review-quiz-answer')) {
       return;
     }
+    var currValue = this.data.getUsefulness();
+    var newValue = evt.target.classList.contains('review-quiz-answer-yes') ? ++currValue : --currValue;
+    newValue = newValue > 0 ? newValue : 0;
+    this.data.setUsefulness(newValue, this._changeUsefulnessState.bind(this, evt));
+  };
+
+  Review.prototype._changeUsefulnessState = function(evt) {
     Array.prototype.forEach.call(this.usefulnessSpans, function(item) {
       item.classList.remove('review-quiz-answer-active');
     });
