@@ -13,11 +13,17 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this._onCloseClick = this._onCloseClick.bind(this);
     this._onBackwardClick = this._onBackwardClick.bind(this);
     this._onForwardClick = this._onForwardClick.bind(this);
+    this.onHashChange = this.onHashChange.bind(this);
+    window.addEventListener('hashchange', this.onHashChange);
   };
 
   inherit(Gallery, baseDOM);
 
-  Gallery.prototype.show = function(number) {
+  Gallery.prototype.show = function(param) {
+    var number = typeof param === 'string' ? this.pictures.indexOf(param) : param;
+    if (number === -1) {
+      return;
+    }
     this.close.addEventListener('click', this._onCloseClick);
     this.backward.addEventListener('click', this._onBackwardClick);
     this.forward.addEventListener('click', this._onForwardClick);
@@ -30,6 +36,7 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this.close.removeEventListener('click', this._onCloseClick);
     this.backward.removeEventListener('click', this._onBackwardClick);
     this.forward.removeEventListener('click', this._onForwardClick);
+    location.hash = '';
   };
   Gallery.prototype.setActivePicture = function(number) {
     this.activePicture = number;
@@ -49,13 +56,27 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
   };
   Gallery.prototype._onBackwardClick = function() {
     if (this.activePicture >= 1) {
-      this.setActivePicture(this.activePicture - 1);
+      location.hash = '#photo/' + this.pictures[this.activePicture - 1];
     }
   };
   Gallery.prototype._onForwardClick = function() {
     if (this.activePicture < this.pictures.length - 1) {
-      this.setActivePicture(this.activePicture + 1);
+      location.hash = '#photo/' + this.pictures[this.activePicture + 1];
     }
+  };
+  Gallery.prototype.onHashChange = function() {
+    var regExp = /#photo\/(\S+)/;
+    var address = location.hash.match(regExp);
+    address = address ? address[0].replace('#photo/', '') : null;
+    if (address) {
+      this.show(address);
+    } else {
+      this.hide();
+    }
+  };
+  Gallery.prototype.remove = function() {
+    this.hide();
+    window.removeEventListener('hashchange', this.onHashChange);
   };
   return Gallery;
 });
