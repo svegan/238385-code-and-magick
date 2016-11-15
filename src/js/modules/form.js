@@ -41,7 +41,6 @@ define(function() {
       var infoLabels = infoBlock.querySelectorAll('label');
       var cookieMark = 'review-mark';
       var cookieUserName = 'review-name';
-      console.dir(raitings);
 
       name.required = true;
 
