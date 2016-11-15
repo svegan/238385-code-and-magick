@@ -36,11 +36,9 @@ define(function() {
       var raitings = reviewForm.elements['review-mark'];
       var name = reviewForm.elements['review-name'];
       var text = reviewForm.elements['review-text'];
-      var textActive = false;
       var submitButton = reviewForm.querySelector('.review-submit');
       var infoBlock = reviewForm.querySelector('.review-fields');
       var infoLabels = infoBlock.querySelectorAll('label');
-      var i;
       var cookieMark = 'review-mark';
       var cookieUserName = 'review-name';
 
@@ -63,13 +61,10 @@ define(function() {
         checkInfo();
       };
 
-      validateForm();
-
       // Изменение состояния поля "Отзыв"
       var changeTextState = function(active) {
-        text.required = active ? true : false;
+        text.required = active;
       };
-      changeTextState(textActive);
 
       var getHopperCookie = function() {
         var userMark = window.Cookies.get(cookieMark);
@@ -87,6 +82,9 @@ define(function() {
       };
 
       getHopperCookie();
+      var textActive = parseInt(reviewForm.querySelector(':checked').value, 10) < 3;
+      changeTextState(textActive);
+      validateForm();
 
       // Присваивание обработчиков событий на радиокнопки
       Array.prototype.forEach.call(raitings, function(elem) {
@@ -112,7 +110,7 @@ define(function() {
 
       // Изменение видимости информационного блока
       function checkInfo() {
-        for (i = 0; i < infoLabels.length; i++) {
+        for (var i = 0; i < infoLabels.length; i++) {
           if(infoLabels[i].style.display === 'inline') {
             changeDisplay(infoBlock, 'inline-block');
             return;
