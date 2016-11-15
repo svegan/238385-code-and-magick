@@ -30,6 +30,7 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this.usefulness = this.element.querySelector('.review-quiz');
     this.usefulnessSpans = this.usefulness.querySelectorAll('.review-quiz-answer');
     this.usefulness.addEventListener('click', this._onUsefulnessClick, true);
+  };
 
   inherit(Review, baseDOM);
 
