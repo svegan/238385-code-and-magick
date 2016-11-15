@@ -31,18 +31,6 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this.usefulnessSpans = this.usefulness.querySelectorAll('.review-quiz-answer');
     this.usefulness.addEventListener('click', this._onUsefulnessClick, true);
 
-    var debug = false;
-    if (debug) {
-      var timeStampInfo = document.createElement('p');
-      var createdDate = new Date(data.getCreatedTime());
-      timeStampInfo.textContent = 'TimeStamp: ' + createdDate.getDate();
-      this.element.appendChild(timeStampInfo);
-      var popularity = document.createElement('p');
-      popularity.textContent = 'Popularity: ' + data.getUsefulness();
-      this.element.appendChild(popularity);
-    }
-  };
-
   inherit(Review, baseDOM);
 
   Review.prototype._onImageLoad = function(evt) {
@@ -76,6 +64,17 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
 
   Review.prototype.remove = function() {
     this.usefulness.removeEventListener('click', this._onUsefulnessClick);
+    this.profileImage.removeEventListener('load', this._onImageLoad);
+    this.profileImage.removeEventListener('error', this._onImageError);
+
+    this.data = null;
+    this.profileImage = null;
+    this.profileImageTimeout = null;
+    this.author = null;
+    this._onImageLoad = null;
+    this._onImageError = null;
+    this._onUsefulnessClick = null;
+    this.profileImageTimeout = null;
     baseDOM.prototype.remove.call(this);
   };
   return Review;

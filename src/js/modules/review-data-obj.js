@@ -43,6 +43,9 @@ define(function() {
     },
     setRating: function(rating) {
       this.data.rating = rating;
+    },
+    remove: function() {
+      this.data = null;
     }
   };
   return ReviewData;
