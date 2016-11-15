@@ -77,6 +77,18 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
   Gallery.prototype.remove = function() {
     this.hide();
     window.removeEventListener('hashchange', this.onHashChange);
+    this.pictures = null;
+    this.activePicture = null;
+    this.backward = null;
+    this.forward = null;
+    this.currentPicture = null;
+    this.total = null;
+    this.close = null;
+    this._onCloseClick = null;
+    this._onBackwardClick = null;
+    this._onForwardClick = null;
+    this.onHashChange = null;
+    this.element = null;
   };
   return Gallery;
 });
