@@ -10,6 +10,7 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this.currentPicture = this.element.querySelector('.preview-number-current');
     this.total = this.element.querySelector('.preview-number-total');
     this.close = this.element.querySelector('.overlay-gallery-close');
+    this.preview = this.element.querySelector('.overlay-gallery-preview');
     this._onCloseClick = this._onCloseClick.bind(this);
     this._onBackwardClick = this._onBackwardClick.bind(this);
     this._onForwardClick = this._onForwardClick.bind(this);
@@ -40,14 +41,13 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
   };
   Gallery.prototype.setActivePicture = function(number) {
     this.activePicture = number;
-    var preview = document.querySelector('.overlay-gallery-preview');
-    var existImage = preview.querySelector('img');
+    var existImage = this.preview.querySelector('img');
     var picture = new Image();
     picture.src = this.pictures[number];
     if (existImage) {
-      preview.replaceChild(picture, existImage);
+      this.preview.replaceChild(picture, existImage);
     } else {
-      preview.appendChild(picture);
+      this.preview.appendChild(picture);
     }
     this.currentPicture.textContent = number + 1;
   };
@@ -84,6 +84,7 @@ define(['./inherit', './baseDOM'], function(inherit, baseDOM) {
     this.currentPicture = null;
     this.total = null;
     this.close = null;
+    this.preview = null;
     this._onCloseClick = null;
     this._onBackwardClick = null;
     this._onForwardClick = null;
